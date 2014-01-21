@@ -2,9 +2,20 @@
 /**
  * Plugin Name: Barebones Slideshow
  * Plugin URI: http://github.com/MatthewJA/barebones-slideshow
- * Description: A brief description of the Plugin.
- * Version: The Plugin's Version Number, e.g.: 1.0
- * Author: Name Of The Plugin Author
- * Author URI: http://URI_Of_The_Plugin_Author
- * License: A "Slug" license name e.g. GPL2
+ * Description: Simple slideshow plugin.
+ * Version: 0.0.1
+ * Author: MatthewJA
+ * Author URI: http://github.com/MatthewJA
+ * License: GPL v2
  */
+
+/* Register functions with WordPress. */
+add_shortcode('barebones-slideshow', 'barebones_slideshow_get');
+
+$barebones_slideshow_class = 'barebones-slideshow';
+
+function barebones_slideshow_get() {
+	return "<div class=\"{$barebones_slideshow_class}\">Hello, world!</div>"
+}
+
+/** End of file **/

@@ -3,7 +3,7 @@
  * Plugin Name: Barebones Slideshow
  * Plugin URI: http://github.com/MatthewJA/barebones-slideshow
  * Description: Simple slideshow plugin.
- * Version: 0.1.0
+ * Version: 0.1.2
  * Author: MatthewJA
  * Requires at least: 3.0
  * Tested up to: 3.8

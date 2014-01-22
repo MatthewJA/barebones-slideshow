@@ -102,7 +102,7 @@ function barebones_slideshow_setting_slidetime() {
 function barebones_slideshow_setting_captions() {
     $options = get_option('barebones_slideshow_slides');
     echo "<input id=\"barebones_slideshow_captions\" name=\"barebones_slideshow_slides[captions]\" size=\"40\" type=\"text\" value=\"{$options['captions']}\" />";
-    echo '<p>Input captions for the slides, separated by pipes (|). If you do not want a caption for a particular image, just leave that caption blank.';
+    echo '<p>Input captions for the slides, separated by pipes (|). If you do not want a caption for a particular image, just leave that caption blank. ';
     echo 'Leave blank if you want no captions.</p>';
 }
 
@@ -115,7 +115,7 @@ function barebones_slideshow_get() {
     $slide_time = $options['slidetime'] ? $options['slidetime'] : '1000';
 
     // Get an array of images.
-    $images = explode("|", preg_replace('/\s/', '', $options['images']));
+    $images = explode('|', preg_replace('/\s/', '', $options['images']));
 
     $image_count = sizeof($images);
 
@@ -129,6 +129,20 @@ function barebones_slideshow_get() {
         $image_tags[] = '<img src="' . $images[$i] . '" class="' . 'barebones-slideshow-image' . '" style="width:100%; display:none; position:absolute;" />';
     }
 
+    // Sort out captions.
+    $captions = explode('|', $options['captions']);
+
+    if (sizeof($captions) == 0) {
+        $captions_enabled = 'false';
+    } else {
+        $captions_enabled = 'true';
+    }
+
+    $caption_tags = array();
+    for ($i=0; $i < sizeof($captions); $i++) { 
+        $caption_tags[] = '<div class="barebones-slideshow-caption" style="position:absolute; bottom:0; left:0; background-color:#FFFFFF;">' . $captions[$i] . '</div>';
+    }
+
     // Construct the JavaScript code for the slideshow.
     $code = <<<JAVASCRIPT
         <script>
@@ -139,17 +153,20 @@ function barebones_slideshow_get() {
                 var slideTime = {$slide_time};
                 var slideSpeed = 5;
 
+                var captions = {$captions_enabled};
+
                 var slideshows = null;
 
                 var transitionBetween = function(last, next, speed) {
                     // Transition between slide last and slide next.
-                    console.log(last, next)
 
                     // Show the next slide and set reference positions.
                     var lastLeft = [];
                     var nextLeft = [];
                     for (var i = slideshows.length - 1; i >= 0; i--) {
                         slideshows[i].children[next].style.display = 'inline';
+                        if (slideshows[i].children[next + maxSlide])
+                            slideshows[i].children[next + maxSlide].style.display = 'block';
                         lastLeft.push(0);
                         nextLeft.push(slideshows[i].children[last].offsetWidth);
                     };
@@ -164,6 +181,13 @@ function barebones_slideshow_get() {
 
                                 slideshows[i].children[last].style.left = lastLeft[i] + 'px';
                                 slideshows[i].children[next].style.left = nextLeft[i] + 'px';
+
+                                if (captions) {
+                                    if (slideshows[i].children[last + maxSlide])
+                                        slideshows[i].children[last + maxSlide].style.left = lastLeft[i] + 'px';
+                                    if (slideshows[i].children[next + maxSlide])
+                                        slideshows[i].children[next + maxSlide].style.left = nextLeft[i] + 'px';
+                                }
                             }
 
                             setTimeout(doTransition, 1);
@@ -171,6 +195,8 @@ function barebones_slideshow_get() {
                             // Clean up.
                             for (var i = slideshows.length - 1; i >= 0; i--) {
                                 slideshows[i].children[last].style.display = 'none';
+                                if (slideshows[i].children[last + maxSlide])
+                                    slideshows[i].children[last + maxSlide].style.display = 'none';
                                 slideshows[i].children[last].style.left = '0';
                                 slideshows[i].children[next].style.left = '0';
                             };
@@ -194,6 +220,8 @@ function barebones_slideshow_get() {
                     if (slideshows.length > 0) {
                         for (var i = slideshows.length - 1; i >= 0; i--) {
                             slideshows[i].children[0].style.display = 'inline';
+                            if (slideshows[i].children[maxSlide])
+                                slideshows[i].children[maxSlide].style.display = 'inline';
                             slideshows[i].style.height = slideshows[i].children[0].offsetHeight + 'px';
                         };
                         transitionSlide();
@@ -209,7 +237,7 @@ function barebones_slideshow_get() {
         </script>
 JAVASCRIPT;
 
-    return '<div class="' . 'barebones-slideshow' . '" style="overflow:hidden; width:100%; position:relative;">' . implode($image_tags) . '</div>' . $code;
+    return '<div class="' . 'barebones-slideshow' . '" style="overflow:hidden; width:100%; position:relative;">' . implode($image_tags) . implode($caption_tags) . '</div>' . $code;
 }
 
 

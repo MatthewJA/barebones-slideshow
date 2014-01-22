@@ -171,13 +171,17 @@ function barebones_slideshow_get() {
                         nextLeft.push(slideshows[i].children[last].offsetWidth);
                     };
 
+                    var ticker = 0;
+
                     // Define the actual transition.
                     var doTransition = function() {
-                        if (nextLeft[0] > 0) {
+                        if (ticker < 1000) {
+                            ticker += 1;
                             for (var i = slideshows.length - 1; i >= 0; i--) {
-                                var currentSpeed = Math.max(0.5, 1 + (Math.sin(nextLeft[i] / slideshows[i].children[last].offsetWidth * Math.PI) * speed));
-                                lastLeft[i] -= currentSpeed;
-                                nextLeft[i] -= currentSpeed;
+                                var currentLeft = (1 - Math.cos(ticker/1000 * Math.PI)) / 2 * -slideshows[i].children[last].offsetWidth;
+                                currentLeft += slideshows[i].children[last].offsetWidth * 0.0007;
+                                lastLeft[i] = currentLeft;
+                                nextLeft[i] = currentLeft + slideshows[i].children[last].offsetWidth;
 
                                 slideshows[i].children[last].style.left = lastLeft[i] + 'px';
                                 slideshows[i].children[next].style.left = nextLeft[i] + 'px';

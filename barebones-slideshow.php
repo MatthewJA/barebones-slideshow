@@ -3,7 +3,7 @@
  * Plugin Name: Barebones Slideshow
  * Plugin URI: http://github.com/MatthewJA/barebones-slideshow
  * Description: Simple slideshow plugin.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: MatthewJA
  * Requires at least: 3.0
  * Tested up to: 3.8
@@ -140,7 +140,7 @@ function barebones_slideshow_get() {
 
     $caption_tags = array();
     for ($i=0; $i < sizeof($captions); $i++) { 
-        $caption_tags[] = '<div class="barebones-slideshow-caption" style="position:absolute; bottom:0; left:0; background-color:#FFFFFF; display: none;">' . $captions[$i] . '</div>';
+        $caption_tags[] = '<div class="barebones-slideshow-caption" style="position:absolute; background-color:#FFFFFF; display: none;">' . $captions[$i] . '</div>';
     }
 
     // Construct the JavaScript code for the slideshow.
@@ -181,6 +181,10 @@ function barebones_slideshow_get() {
                             ticker += speed;
                             if (ticker > 500) ticker = 500;
                             for (var i = slideshows.length - 1; i >= 0; i--) {
+                                // Update slideshow height.
+                                slideshows[i].style.height = slideshows[i].children[last].offsetHeight + 'px';
+
+                                // Transition.
                                 if (slideMode == "slide") {
                                     var currentLeft = -ticker/500*slideshows[i].children[last].offsetWidth;
                                     lastLeft[i] = currentLeft;

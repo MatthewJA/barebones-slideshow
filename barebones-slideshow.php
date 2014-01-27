@@ -157,6 +157,8 @@ function barebones_slideshow_get() {
 
                 var slideshows = null;
 
+                var slideMode = "fade";
+
                 var transitionBetween = function(last, next, speed) {
                     // Transition between slide last and slide next.
 
@@ -175,22 +177,36 @@ function barebones_slideshow_get() {
 
                     // Define the actual transition.
                     var doTransition = function() {
-                        if (ticker < 1000) {
+                        if (ticker < 500) {
                             ticker += 1;
                             for (var i = slideshows.length - 1; i >= 0; i--) {
-                                var currentLeft = (1 - Math.cos(ticker/1000 * Math.PI)) / 2 * -slideshows[i].children[last].offsetWidth;
-                                currentLeft += slideshows[i].children[last].offsetWidth * 0.0007;
-                                lastLeft[i] = currentLeft;
-                                nextLeft[i] = currentLeft + slideshows[i].children[last].offsetWidth;
+                                if (slideMode == "slide") {
+                                    var currentLeft = -ticker/500*slideshows[i].children[last].offsetWidth;
+                                    lastLeft[i] = currentLeft;
+                                    nextLeft[i] = currentLeft + slideshows[i].children[last].offsetWidth;
 
-                                slideshows[i].children[last].style.left = lastLeft[i] + 'px';
-                                slideshows[i].children[next].style.left = nextLeft[i] + 'px';
+                                    slideshows[i].children[last].style.left = lastLeft[i] + 'px';
+                                    slideshows[i].children[next].style.left = nextLeft[i] + 'px';
 
-                                if (captions) {
-                                    if (slideshows[i].children[last + maxSlide])
-                                        slideshows[i].children[last + maxSlide].style.left = lastLeft[i] + 'px';
-                                    if (slideshows[i].children[next + maxSlide])
-                                        slideshows[i].children[next + maxSlide].style.left = nextLeft[i] + 'px';
+                                    if (captions) {
+                                        if (slideshows[i].children[last + maxSlide])
+                                            slideshows[i].children[last + maxSlide].style.left = lastLeft[i] + 'px';
+                                        if (slideshows[i].children[next + maxSlide])
+                                            slideshows[i].children[next + maxSlide].style.left = nextLeft[i] + 'px';
+                                    }
+                                } else if (slideMode == "fade") {
+                                    slideshows[i].children[last].style.opacity = 1 - ticker/500;
+                                    slideshows[i].children[last].style.filter = "alpha(opacity=" + ((1 - ticker/500)*100) + ")";
+                                    slideshows[i].children[next].style.opacity = ticker/500;
+                                    slideshows[i].children[next].style.filter = "alpha(opacity=" + (ticker/500*100) + ")";
+                                    if (captions) {
+                                        if (slideshows[i].children[last + maxSlide])
+                                            slideshows[i].children[last + maxSlide].style.opacity = 1 - ticker/500;
+                                            slideshows[i].children[last + maxSlide].style.filter = "alpha(opacity=" + ((1 - ticker/500)*100) + ")";
+                                        if (slideshows[i].children[next + maxSlide])
+                                            slideshows[i].children[next + maxSlide].style.opacity = ticker/500;
+                                            slideshows[i].children[next + maxSlide].style.filter = "alpha(opacity=" + (ticker/500*100) + ")";
+                                    }
                                 }
                             }
 

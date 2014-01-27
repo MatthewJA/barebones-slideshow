@@ -140,7 +140,7 @@ function barebones_slideshow_get() {
 
     $caption_tags = array();
     for ($i=0; $i < sizeof($captions); $i++) { 
-        $caption_tags[] = '<div class="barebones-slideshow-caption" style="position:absolute; bottom:0; left:0; background-color:#FFFFFF;">' . $captions[$i] . '</div>';
+        $caption_tags[] = '<div class="barebones-slideshow-caption" style="position:absolute; bottom:0; left:0; background-color:#FFFFFF; display: none;">' . $captions[$i] . '</div>';
     }
 
     // Construct the JavaScript code for the slideshow.

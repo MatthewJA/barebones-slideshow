@@ -3,7 +3,7 @@
  * Plugin Name: Barebones Slideshow
  * Plugin URI: http://github.com/MatthewJA/barebones-slideshow
  * Description: Simple slideshow plugin.
- * Version: 0.1.2
+ * Version: 0.2.0
  * Author: MatthewJA
  * Requires at least: 3.0
  * Tested up to: 3.8
@@ -178,7 +178,8 @@ function barebones_slideshow_get() {
                     // Define the actual transition.
                     var doTransition = function() {
                         if (ticker < 500) {
-                            ticker += 1;
+                            ticker += speed;
+                            if (ticker > 500) ticker = 500;
                             for (var i = slideshows.length - 1; i >= 0; i--) {
                                 if (slideMode == "slide") {
                                     var currentLeft = -ticker/500*slideshows[i].children[last].offsetWidth;
